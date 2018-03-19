@@ -14,7 +14,10 @@ class ExampleSpider(Spider):
         HTTPCACHE_ENABLED=True,
         HTTPCACHE_DIR='/tmp',
         HTTPCACHE_EXPIRATION_SECS=60 * 60 * 24,
-        EXTENSIONS={'scrapy_flavor.periodic.StartRequests': 1},
+        EXTENSIONS={
+            'scrapy_flavor.periodic.StartRequests': 1,
+            'scrapy_flavor.priority.ConfigurePriority': 1,
+        },
         JOBDIR='/tmp/%s' % name,
         LOG_FORMAT='%(asctime)s.%(msecs)03d [%(name)s] %(levelname)s: %(message)s',
         LOG_LEVEL='DEBUG',

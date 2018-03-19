@@ -5,7 +5,7 @@ class ConfigurePriority:
 
     @classmethod
     def from_crawler(cls, crawler):
-        obj = cls(crawler)
+        obj = cls()
         crawler.signals.connect(obj.request_scheduled, signals.request_scheduled)
         return obj
 
