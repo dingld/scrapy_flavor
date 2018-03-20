@@ -31,17 +31,17 @@ class AgedDupefilter(RFPDupeFilter):
         """
         fp = self.request_fingerprint(request)
         aged_at = self.fingerprints.get(fp)
-        if aged_at and aged_at > self.clock.right_now():
-            return True
+        if aged_at is not None:
+            if aged_at == 0 or aged_at > self.clock.right_now():
+                return True
         self._update_fingerprint(fp, 0)
 
     def request_aged(self, request):
         age = request.meta.get('age', 0)
-        if age > 0:
-            age_at = self.clock.aged_at(age)
-            self._update_fingerprint(request, age_at)
-            for url in request.meta.get('redirect_urls', []):
-                self._update_fingerprint(request.replace(url=url), age_at)
+        age_at = self.clock.aged_at(age)
+        self._update_fingerprint(request, age_at)
+        for url in request.meta.get('redirect_urls', []):
+            self._update_fingerprint(request.replace(url=url), age_at)
 
     def _update_fingerprint(self, request, aged_at):
         fp = request if isinstance(request, str) \
