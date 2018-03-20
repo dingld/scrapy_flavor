@@ -2,7 +2,7 @@ from functools import wraps
 from scrapy_flavor.periodic import request_aged
 
 
-def every(age=60 * 5):
+def every(age=0):
     """
     Crawl spider.start_requests every `age` seconds.
     """
@@ -15,7 +15,7 @@ def every(age=60 * 5):
     return wrap
 
 
-def config(age=60 * 60 * 24 * 30, priority=0):
+def config(age=0, priority=0):
     """
     Invalidate request fingerprint in `age` seconds.
     Set the request priority.
@@ -23,10 +23,12 @@ def config(age=60 * 60 * 24 * 30, priority=0):
     def wrap(func):
         @wraps(func)
         def wrapped(spider, response):
-            func._priority = priority
-            request = response.request
-            request.meta.update(age=age)
-            spider.crawler.signals.send_catch_log(request_aged, request=request)
+            if not hasattr(func, '_priority'):
+                func._priority = priority
+            if age >0 :
+                request = response.request
+                request.meta.update(age=age)
+                spider.crawler.signals.send_catch_log(request_aged, request=request)
             return func(spider, response)
         return wrapped
     return wrap
