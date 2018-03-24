@@ -11,6 +11,7 @@ class ExampleSpider(Spider):
         CLOSESPIDER_TIMEOUT=60*30,
         CONCURRENT_REQUESTS_PER_DOMAIN=1,
         DUPEFILTER_DEBUG=True,
+        DUPEFILTER_CLASS='scrapy_flavor.dupefilter.AgedDupeFilter',
         HTTPCACHE_ENABLED=True,
         HTTPCACHE_DIR='/tmp',
         HTTPCACHE_EXPIRATION_SECS=60 * 60 * 24,

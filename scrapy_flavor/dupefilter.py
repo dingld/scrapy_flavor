@@ -7,7 +7,7 @@ from scrapy_flavor.clock import SimpleClock
 request_aged = object()
 
 
-class AgedDupefilter(RFPDupeFilter):
+class AgedDupeFilter(RFPDupeFilter):
 
     def __init__(self, path=None, debug=False):
         self.file = None

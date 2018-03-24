@@ -1,7 +1,7 @@
 from twisted.internet import task
 from scrapy import signals
 from scrapy.exceptions import DontCloseSpider
-from scrapy_flavor.dupefilter import AgedDupefilter, request_aged
+from scrapy_flavor.dupefilter import AgedDupeFilter, request_aged
 
 
 class StartRequests:
@@ -18,7 +18,7 @@ class StartRequests:
         Hack crawler.engine.slot to provide start_requests again
         """
         slot = crawler.engine.slot
-        if slot:
+        if slot and not slot.start_requests:
             slot.start_requests = iter(crawler.spider.start_requests())
             slot.nextcall.schedule()
             crawler.stats.inc_value('flavor/start_requests/beat', 1)
@@ -33,7 +33,6 @@ class StartRequests:
         task.LoopingCall(self.start_requests, spider.crawler).start(every, now=False)
         spider.logger.info('Crawl spider.start_requests every %.3f seconds', every)
         scheduler = spider.crawler.engine.slot.scheduler
-        scheduler.df = AgedDupefilter.from_settings(spider.crawler.settings)
         spider.crawler.signals.connect(scheduler.df.request_aged, request_aged)
 
     def dont_close(self):
