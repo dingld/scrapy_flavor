@@ -11,6 +11,6 @@ class ConfigurePriority:
 
     def request_scheduled(self, request, spider):
         callback = request.callback or spider.parse
-        priority = getattr(callback, '_priority', 0)
-        request.priority = max(request.priority, priority)
+        if hasattr(callback, '_priority'):
+            request.priority += getattr(callback, '_priority', 0)
 

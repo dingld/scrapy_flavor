@@ -21,11 +21,11 @@ def config(age=0, priority=0):
     Set the request priority.
     """
     def wrap(func):
+        if not hasattr(func, '_priority'):
+            func._priority = priority
         @wraps(func)
         def wrapped(spider, response):
-            if not hasattr(func, '_priority'):
-                func._priority = priority
-            if age >0 :
+            if age > 0:
                 request = response.request
                 request.meta.update(age=age)
                 spider.crawler.signals.send_catch_log(request_aged, request=request)
